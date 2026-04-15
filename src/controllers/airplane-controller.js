@@ -7,7 +7,6 @@ const { error } = require('winston');
 // req-body {modelNumber: 'airbus320', capacity: 200}
 async function createAirplane(req,res){
     try{
-        console.log(req.body);
         const airplane = await AirplaneService.createAirplane({
             modelNumber: req.body.modelNumber,
             capacity: req.body.capacity

@@ -1,5 +1,5 @@
 .env
 node_modules
 combined.log;
-README_personal.md
+readmepersonal.md
 src/config/config.json
