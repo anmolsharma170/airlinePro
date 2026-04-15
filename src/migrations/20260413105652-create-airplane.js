@@ -33,3 +33,6 @@ module.exports = {
 };
 // model keeps changes to javascript level
 // whereas migrations do changes in database level
+// model is like a blueprint of the table in database
+// model is used to create table in database using migration
+// migration is used for version control of database changes

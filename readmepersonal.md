@@ -110,3 +110,48 @@ Sequelize is our ORM (Object Relational Mapper) used to interact with the SQL da
 - **Repositories (`src/repositories/crud-repository.js`)**: We implemented the Repository Pattern. All raw database interactions (like `create`, `destroy`, `findAll`) are placed here. This abstracts Sequelize code away from our main business logic, making it easier to replace the ORM later if needed.
 - **Controllers (`src/controllers/info-controller.js`)**: Receives the incoming HTTP request, passes data to services/repositories, and sends formatted HTTP responses back to the client.
 - **Routes (`src/routes/v1/`)**: Connects endpoints (URLs) directly to specific Controller functions. It defines the structure of our API (e.g., `/api/v1/info`).
+
+---
+
+## 🚀 Advanced Interview Questions & Core Concepts Analyzed
+
+### 5. Express Request Parsing (Middleware)
+**Q: Why do we use `app.use(express.json())` and `app.use(express.urlencoded({extended: true}))` in `index.js`?**
+*Answer:* By default, Express does not know how to parse the incoming request body.
+- `express.json()` parses incoming HTTP requests that have a `Content-Type: application/json` payload.
+- `express.urlencoded()` parses incoming requests with URL-encoded payloads (like HTML form submissions). 
+If these middlewares are missing, `req.body` will simply be `undefined` and your POST/PATCH requests will fail.
+
+**Q: What is `express.Router()`?**
+*Answer:* It creates modular, mountable route handlers. It acts as a "mini-application". We use it to group our API routes (e.g., `/api/v1/...`) keeping the main `index.js` incredibly clean and modular.
+
+### 6. CommonJS and Module Exports
+**Q: What happens if you export a function directly `module.exports = createAirplane` but try to import it using destructuring `const { createAirplane } = require(...)`?**
+*Answer:* It will be `undefined`. If you export a function by default, you must import it directly. If you want to use destructuring during import, you must export an object containing the function: `module.exports = { createAirplane }`. Mixing these up is a common source of "function is not a function" errors.
+
+### 7. Object-Oriented Programming (OOP) in Repositories
+**Q: I see a `CrudRepository` class. Why did you use class inheritance (`AirplaneRepository extends CrudRepository`) instead of writing raw queries directly for Airplanes?**
+*Answer:* To strictly follow the **DRY (Don't Repeat Yourself)** principle. Generating generic `create`, `destroy`, `get`, and `update` logic inside a base `CrudRepository` means that for every new database entity (e.g., `City`, `Flight`, `Booking`), all we have to do is extend the `CrudRepository` and pass the specific Sequelize model in the `super()` call. We instantly inherit all CRUD functionality without rewriting any code.
+
+### 8. Database ORM (Sequelize)
+**Q: What is an ORM and why use it over raw SQL queries?**
+*Answer:* ORM (Object-Relational Mapper) maps JS objects/classes to Database tables. 
+- *Pros:* Automatically prevents SQL Injection by sanitizing inputs, abstracts database syntaxes making the app database-agnostic (easy to switch from MySQL to PostgreSQL), and vastly improves developer speed.
+- *Cons:* Translating JS objects to complex SQL joins can introduce performance overhead compared to highly optimized raw SQL.
+
+**Q: What is the difference between `findByPk` and `findOne` in Sequelize?**
+*Answer:* `findByPk` fetches a single entry strictly by its Primary Key (e.g., ID). `findOne` retrieves the first entry that satisfies a custom `where` clause.
+
+### 9. Asynchronous JavaScript & Error Handling
+**Q: Why use `async/await` everywhere across the Controllers, Services, and Repositories?**
+*Answer:* Database queries (Sequelize) and network responses take time. They return Promises. Using `await` prevents "callback hell" (nested callbacks) and `#then()` chains, making asynchronous code read synchronously and cleanly.
+
+**Q: How does the Error Handling flow work across your layers?**
+*Answer:* 
+1. The **Repository** wraps DB calls in `try/catch`. If an DB error occurs, it logs it securely via `winston` and `throw error` forwards it.
+2. The **Service** catches it (could apply business logic on the error) and `throw error` forwards it.
+3. The **Controller** catches it in its `catch` block and sends a standardized HTTP response (e.g., `HTTP 500 INTERNAL_SERVER_ERROR`) to the client preventing the raw, sensitive database stack trace from ever being exposed to the user.
+
+### 10. HTTP Constants
+**Q: Why use the `http-status-codes` package instead of typing `201` or `500` inside your controllers?**
+*Answer:* "Magic numbers" reduce code readability. `StatusCodes.CREATED` exactly describes the intent of the response. It also mitigates human error (like accidentally typing 200 instead of 201 for a resource creation response).

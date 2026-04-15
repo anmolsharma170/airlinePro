@@ -1,3 +1,6 @@
+// repository talks to models
+// controllers dont directly talk with models
+// services have business logic 
 const {Logger} = require('../config')
 class CrudRepository{
     constructor(model){
@@ -12,6 +15,7 @@ class CrudRepository{
             throw error;
         }
     }
+    //this create function will help to create some data
     async destroy(data){
         try{
             const response = await this.model.destroy(data)({
@@ -25,6 +29,7 @@ class CrudRepository{
             throw error;
         }
     }
+    //this create function will help to delete some data
     async get(data){
         try{
             const response = await this.model.findByPk(data);
@@ -34,9 +39,9 @@ class CrudRepository{
             throw error;
         }
     }
-    async update(id,data){
+    async update(id,data){  //here data is object
         try{
-            const response = await this.model.findByPk(data,{
+            const response = await this.model.update(data,{
                 where: {
                     id: id 
                 }

@@ -1,5 +1,7 @@
+// services use repositories to intract with the database
+
 const {AirplaneRepository} = require('../repositories');
-const airplanerepository = new AirplaneRepository;
+const airplanerepository = new AirplaneRepository();
 async function createAirplane(data){
     try{
         const airplane = await airplanerepository.create(data);
@@ -8,4 +10,6 @@ async function createAirplane(data){
         throw error;
     }
 }
-module.exports = createAirplane
+module.exports = {
+    createAirplane
+}

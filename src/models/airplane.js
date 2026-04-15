@@ -25,3 +25,6 @@ module.exports = (sequelize, DataTypes) => {
   });
   return Airplane;
 };
+
+// javascript level changes are done in model file
+// database level changes are done in migration file

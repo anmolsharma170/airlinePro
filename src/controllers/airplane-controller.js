@@ -1,0 +1,44 @@
+const {StatusCodes} = require('http-status-codes');
+const {AirplaneService} = require('../services');
+const { error } = require('winston');
+// create airplane api will look like
+// it will be a post request 
+// data will come inside request body 
+// req-body {modelNumber: 'airbus320', capacity: 200}
+async function createAirplane(req,res){
+    try{
+        console.log(req.body);
+        const airplane = await AirplaneService.createAirplane({
+            modelNumber: req.body.modelNumber,
+            capacity: req.body.capacity
+        });
+        return res
+                .status(StatusCodes.CREATED)
+                .json({
+                    success: true,
+                    message: 'Successfully created an airplane',
+                    data: airplane,
+                    error: {}
+                });
+    }
+    catch(error){
+        return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+            success: false,
+            message: 'Something went wrong while creating airplane',
+            data: {},
+            error: error 
+        })
+    }
+}
+module.exports = {
+    createAirplane
+}
+
+// In the try block we have the controller we just called the service
+// nothing more nothing less
+// we got the request we passed it to the service
+// service is going to do all the computations and db intraction
+// it will give me back my airplane and what controller does extra is structuring the output as we can see in  json we are doing
+// and to trigger this controller we have to register it in routes
