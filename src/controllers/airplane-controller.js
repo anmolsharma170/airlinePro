@@ -24,8 +24,24 @@ async function createAirplane(req,res){
         .json(ErrorResponse);
     }
 }
+
+async function getAirplanes(req,res){
+    try{
+        const airplanes = await AirplaneService.getAirplanes();
+        SuccessResponse.data = airplanes;
+        return res
+                .status(StatusCodes.OK)
+                .json(SuccessResponse);
+    }catch(error){
+        ErrorResponse.error = error;
+        return res
+        .status(error.statusCode)
+        .json(ErrorResponse);
+    }
+}
 module.exports = {
-    createAirplane
+    createAirplane,
+    getAirplanes
 }
 
 // In the try block we have the controller we just called the service

@@ -10,3 +10,10 @@ router.post('/',
 module.exports = router;
 
 
+//  /api/v1/airplanes and this is a POST request
+router.get('/', 
+        AirplaneController.getAirplanes
+);
+module.exports = router;
+
+

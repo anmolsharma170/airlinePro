@@ -19,40 +19,62 @@ class CrudRepository{
     }
     //this create function will help to create some data
     async destroy(data){
-        try{
-            const response = await this.model.destroy(data)({
+        // try{
+        //     const response = await this.model.destroy(data)({
+        //         where: {
+        //             id:data
+        //         }
+        //     });
+        //     return response;
+        // }catch(error){
+        //     Logger.error('Something went wrong in the CRUD repo: destroy');
+        //     throw error;
+        // }
+        const response = await this.model.destroy(data)({
                 where: {
                     id:data
                 }
-            });
-            return response;
-        }catch(error){
-            Logger.error('Something went wrong in the CRUD repo: destroy');
-            throw error;
-        }
+        });
+        return response;
+
     }
     //this create function will help to delete some data
     async get(data){
-        try{
-            const response = await this.model.findByPk(data);
+        // try{
+        //     const response = await this.model.findByPk(data);
+        //     return response;
+        // }catch(error){
+        //     Logger.error('Something went wrong in the CRUD repo: get');
+        //     throw error;
+        // }
+        const response = await this.model.findByPk(data);
             return response;
-        }catch(error){
-            Logger.error('Something went wrong in the CRUD repo: get');
-            throw error;
-        }
+    }
+    async getAll(){
+        const response = await this.model.findAll();
+        return response;
     }
     async update(id,data){  //here data is object
-        try{
-            const response = await this.model.update(data,{
+        // try{
+        //     const response = await this.model.update(data,{
+        //         where: {
+        //             id: id 
+        //         }
+        //     });
+        //     return response;
+        // }catch(error){
+        //     Logger.error('Something went wrong in the CRUD repo: get');
+        //     throw error;
+        // }
+        const response = await this.model.update(data,{
                 where: {
                     id: id 
                 }
             });
             return response;
-        }catch(error){
-            Logger.error('Something went wrong in the CRUD repo: get');
-            throw error;
-        }
     }
 }
 module.exports=CrudRepository;
+
+
+// we removed try catch from here because error handling will be done in airplane service file

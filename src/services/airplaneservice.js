@@ -22,7 +22,17 @@ async function createAirplane(data){
 
     }
 }
+
+async function getAirplanes(data){
+    try{
+        const airplanes = await airplanerepository.getAll();
+        return airplanes;
+    }catch(error){
+                throw new AppError('Cannot fetch data of all the airplanes',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
 module.exports = {
-    createAirplane
+    createAirplane,
+    getAirplanes
 }
 // based on what response we got from crud repository we can configure app error directly here
