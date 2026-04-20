@@ -10,9 +10,14 @@ router.post('/',
 module.exports = router;
 
 
-//  /api/v1/airplanes and this is a POST request
+//  /api/v1/airplanes and this is a GET request
 router.get('/', 
         AirplaneController.getAirplanes
+);
+
+//  /api/v1/airplanes/:id and this is a POST request
+router.get('/:id', 
+        AirplaneController.getAirplane
 );
 module.exports = router;
 

@@ -19,7 +19,6 @@ async function createAirplane(data){
             throw new AppError(explanantion,StatusCodes.BAD_REQUEST);
         }
         throw new AppError('Cannot create a new airplane object',StatusCodes.INTERNAL_SERVER_ERROR);
-
     }
 }
 
@@ -31,8 +30,21 @@ async function getAirplanes(data){
                 throw new AppError('Cannot fetch data of all the airplanes',StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
+
+async function getAirplane(id){
+    try {
+        const airplanes = await airplanerepository.get(id);
+        return airplanes;
+    } catch (error) {
+        if(error.statusCode == StatusCodes.NOT_FOUND){
+            throw new AppError('The airplane you requested is not present',error.statusCode);
+        }
+        throw new AppError('Cannot fetch data of all the airplanes',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
 module.exports = {
     createAirplane,
-    getAirplanes
+    getAirplanes,
+    getAirplane
 }
 // based on what response we got from crud repository we can configure app error directly here
