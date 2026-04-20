@@ -7,8 +7,6 @@ const router = express.Router();
 router.post('/', 
         AirplaneMiddlewares.validateCreateRequest,
         AirplaneController.createAirplane)
-module.exports = router;
-
 
 //  /api/v1/airplanes and this is a GET request
 router.get('/', 
@@ -18,6 +16,9 @@ router.get('/',
 //  /api/v1/airplanes/:id and this is a POST request
 router.get('/:id', 
         AirplaneController.getAirplane
+);
+router.delete('/:id', 
+        AirplaneController.destroyAirplane
 );
 module.exports = router;
 

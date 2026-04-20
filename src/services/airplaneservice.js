@@ -42,9 +42,19 @@ async function getAirplane(id){
         throw new AppError('Cannot fetch data of all the airplanes',StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
+
+async function destroyAirplane(id){
+    try {
+        const response = await airplanerepository.destroy(id);
+        return response;
+    } catch (error) {
+        throw new AppError('Problem in deleting airplane', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
 module.exports = {
     createAirplane,
     getAirplanes,
-    getAirplane
+    getAirplane,
+    destroyAirplane
 }
 // based on what response we got from crud repository we can configure app error directly here

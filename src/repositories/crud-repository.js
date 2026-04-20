@@ -23,7 +23,7 @@ class CrudRepository{
     //this create function will help to create some data
     async destroy(data){
         // try{
-        //     const response = await this.model.destroy(data)({
+        //     const response = await this.model.destroy({
         //         where: {
         //             id:data
         //         }
@@ -33,7 +33,7 @@ class CrudRepository{
         //     Logger.error('Something went wrong in the CRUD repo: destroy');
         //     throw error;
         // }
-        const response = await this.model.destroy(data)({
+        const response = await this.model.destroy({
                 where: {
                     id:data
                 }
