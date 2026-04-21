@@ -11,4 +11,7 @@ router.post('/',
 router.delete('/:id',
     CityController.deleteCity
 )
+router.patch('/:id',
+    CityController.updateCity
+)
 module.exports= router;
