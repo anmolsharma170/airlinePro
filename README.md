@@ -1,42 +1,63 @@
-This is a base node js project template, which anyone can use as it has been prepared, by keeping some of the most important code principles and project management recommendations. Feel free to change anything.
+# AirlinePro - Flight Booking Backend System
 
-src -> Inside the src folder all the actual source code regarding the project will reside, this will not include any kind of tests. (You might want to make separate tests folder)
+An enterprise-grade, scalable Node.js backend system for managing flight reservations, airplanes, and scheduling. Built utilizing Express.js and the Sequelize ORM, this API heavily enforces layered architecture to maintain clear separation of concerns.
 
-Lets take a look inside the src folder
+## ?? Tech Stack
 
-config -> In this folder anything and everything regarding any configurations or setup of a library or module will be done. For example: setting up dotenv so that we can use the environment variables anywhere in a cleaner fashion, this is done in the server-config.js. One more example can be to setup you logging library that can help you to prepare meaningful logs, so configuration for this library should also be done here.
+- **Framework**: Node.js with Express.js
+- **Database Architecture**: MySQL
+- **ORM**: Sequelize (Migrations, Seeders, Models)
+- **Logging**: Winston 
+- **Utilities**: `http-status-codes`
 
-routes -> In the routes folder, we register a route and the corresponding middleware and controllers to it.
+## ?? Project Architecture
 
-middlewares -> they are just going to intercept the incoming requests where we can write our validators, authenticators etc.
+This system relies on a strict **Modular Layered Architecture**:
+- **Controllers (`/src/controllers`)**: Handle incoming HTTP requests, format response structures, and delegate business logic to services.
+- **Services (`/src/services`)**: Contain the core business logic of the application. Act as an intermediary bridging controllers and repositories.
+- **Repositories (`/src/repositories`)**: Responsible for direct database communication using the Repository Pattern (e.g., standardizing CRUD operations via a base `CrudRepository`).
+- **Middlewares (`/src/middlewares`)**: Express middleware for intercepting requests, performing validation, and handling errors.
+- **Routes (`/src/routes`)**: API route definitions cleanly mapped by API versions (e.g., `v1`).
 
-controllers -> they are kind of the last middlewares as post them you call you business layer to execute the business logic. In controllers we just receive the incoming requests and data and then pass it to the business layer, and once business layer returns an output, we structure the API response in controllers and send the output.
+## ?? API Endpoints
 
-repositories -> this folder contains all the logic using which we interact the DB by writing queries, all the raw queries or ORM queries will go here.
+### Info API
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/info` | Health check route to verify server status |
 
-services -> contains the buiness logic and interacts with repositories for data from the database
+### Airplane APIs
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/airplanes` | Create a new Airplane |
+| `GET` | `/api/v1/airplanes` | Retrieve all Airplanes |
+| `GET` | `/api/v1/airplanes/:id` | Retrieve an Airplane by ID |
+| `PATCH` | `/api/v1/airplanes/:id` | Update an existing Airplane |
+| `DELETE` | `/api/v1/airplanes/:id` | Delete an Airplane by ID |
 
-utils -> contains helper methods, error classes etc.
+### City APIs
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/cities` | Create a new City |
+| `PATCH` | `/api/v1/cities/:id` | Update a City |
+| `DELETE` | `/api/v1/cities/:id` | Delete a City |
 
-Setup the project
-Download this template from github and open it in your favourite text editor.
-Go inside the folder path and execute the following command:
-npm install
-In the root directory create a .env file and add the following env variables
+## ?? Setup & Installation
 
-    PORT=<port number of your choice>
-ex:
-
-    PORT=3000
-go inside the src folder and execute the following command:
-
-  npx sequelize init
-By executing the above command you will get migrations and seeders folder along with a config.json inside the config folder.
-
-If you're setting up your development environment, then write the username of your db, password of your db and in dialect mention whatever db you are using for ex: mysql, mariadb etc
-
-If you're setting up test or prod environment, make sure you also replace the host with the hosted db url.
-
-To run the server execute
-
-npm run dev
+1. Clone the repository and navigate into the folder:
+   ```bash
+   npm install
+   ```
+2. Create a `.env` file in the root directory:
+   ```env
+   PORT=3000
+   ```
+3. Configure your database credentials in `src/config/config.json`.
+4. Run Sequelize migrations to build the tables:
+   ```bash
+   npx sequelize db:migrate
+   ```
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
