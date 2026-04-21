@@ -7,4 +7,8 @@ router.post('/',
     CityMiddlewares.validateCreateRequest,
     CityController.createCity
 )
+
+router.delete('/:id',
+    CityController.deleteCity
+)
 module.exports= router;
