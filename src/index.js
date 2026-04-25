@@ -8,7 +8,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));  //extended true or false doesnot matter it is just for choosing library 1)query string(false) and 2)qs lib(true)
 app.use('/api',apiRoutes);
-app.listen(ServerConfig.PORT,()=>{
+app.listen(ServerConfig.PORT,async()=>{
     console.log(`Successfully started the server on PORT: ${ServerConfig.PORT}`);
     Logger.info("Successfully started the server", {});
+
+    // temp code 
+    const {AirplaneController,City} = require('./models');
+    // const city = await City.findByPk(1);
+    // await city.createAirport({name: 'Indore Airport', code: 'IND'});
+    await City.destroy({
+        where: {
+            id:2
+        }
+    }) 
 })

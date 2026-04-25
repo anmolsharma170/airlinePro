@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addConstraint('Airports',{
+    await queryInterface.addConstraint('Airports',{ // query interface has many options like addcoulm so if we want to add a column to our table we can do it using it create tables delete tables add columns remove columns add constraints (foreign keys) rename tables change column types
       type: 'FOREIGN KEY',
       name: 'city_fkey_constraint',
       fields: ['cityId'],
@@ -11,8 +11,7 @@ module.exports = {
         table: 'Cities',
         field : 'id'
       },
-      onUpdate: 'CASCADE',
-      onDELETE: 'CASCADE'
+      onDelete: 'CASCADE'
     });
   },
 
