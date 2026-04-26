@@ -13,12 +13,13 @@ app.listen(ServerConfig.PORT,async()=>{
     Logger.info("Successfully started the server", {});
 
     // temp code 
+    // this  is temporary code what we are doing here is we are having citie in our cities db we are fetching it using pk and we are trying create a airport using it and the moment we detroy the City city and the airport belonging to that city both gets deleted
     const {AirplaneController,City} = require('./models');
-    // const city = await City.findByPk(1);
-    // await city.createAirport({name: 'Indore Airport', code: 'IND'});
+    // const city = await City.findByPk(3);
+    // await city.createAirport({name: 'Delhi Airport', code: 'DEL'});
     await City.destroy({
         where: {
-            id:2
+            id:3
         }
     }) 
 })
