@@ -14,8 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       // here we will apply js level changes for out foreign key
       this.belongsTo(models.City,{   //means airport belongs to a city
         foreignKey: 'cityId',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+      });
+      this.hasMany(models.Flights,{
+        foreignKey: 'departure_airport_Id',
+        onDelete: 'CASCADE'
+      });
+      this.hasMany(models.Flights,{
+        foreignKey: 'arrival_airport_Id',
+        onDelete: 'CASCADE'
       });
     }
   }
