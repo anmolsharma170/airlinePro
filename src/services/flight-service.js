@@ -4,10 +4,13 @@ const {FlightRepository} = require('../repositories');
 
 const AppError = require('../utils/errors/app-error');
 const flightRepository = new FlightRepository();
-
+const comapareTime = require('../utils/helpers/datetime-helpers');
 async function createFlight(data){
     try{
         const flight = await flightRepository.create(data);
+        if(!comapareTime(flight.arrivalTime, flight.departureTime)){
+            throw new AppError('Arrival time cannot be less than departure time', StatusCodes.BAD_REQUEST); //doing this in middleware can be a better option as we can avoid unnecessary database calls if the data is not valid
+        }
         return flight;
     } catch(error){
         console.log(error); // Log the actual error to understand why DB creation fails
