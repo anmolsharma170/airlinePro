@@ -1,103 +1,117 @@
-# AirlinePro - Flight Booking Backend System | LLM Context Document
-
-> **System Prompt / Context Info:** This document is designed to provide complete context about the AirlinePro backend project to AI assistants (like ChatGPT, Claude, etc.). It outlines the folder structure, architectural principles, database schema, established patterns, and the current project state so the AI can effectively conclude or extend the project.
+﻿# AirlinePro - Flight Booking Backend System
 
 ## 📌 Project Overview
-AirlinePro is an enterprise-grade, scalable Node.js backend system representing the core infrastructure of a flight booking platform. It manages cities, airports, airplanes, and flight scheduling. 
+AirlinePro is an enterprise-grade, scalable Node.js backend system representing the core infrastructure of a flight booking platform. It manages cities, airports, airplanes, and flight scheduling operations with strict adherence to separation of concerns and robust error handling.
 
 ## 🛠️ Tech Stack
 - **Environment**: Node.js
 - **Web Framework**: Express.js
 - **Database**: MySQL
-- **ORM**: Sequelize (using mostly migrations and models)
-- **Logging**: Winston
+- **ORM**: Sequelize (Migrations, Models, CLI)
+- **Logging**: Winston 
 - **Utilities**: `http-status-codes`, `dotenv`
 
 ---
 
-## 🏗️ Architectural Patterns (CRITICAL INSTRUCTIONS FOR AI)
-If you are generating new code for this project, you **must** strictly adhere to this Modular Layered Architecture:
+## ⭐ Star Features & Architectural Patterns
 
-1. **Routes (`src/routes/`)**:
-   - Maps URLs to controllers and applies Middlewares. Organized by API version (e.g., `v1`).
-2. **Middlewares (`src/middlewares/`)**:
-   - Intercepts requests for validation (schema checks) before hitting controllers.
-3. **Controllers (`src/controllers/`)**:
-   - Handles `req` and `res`. Extracts body/params, calls the appropriate Service, formatting the final API response using standardized utility classes (`SuccessResponse`, `ErrorResponse`).
-4. **Services (`src/services/`)**:
-   - Contains all **Business Logic**. It should only receive formatted data from controllers, apply rules, and call Repositories. Throw custom `AppError` instances if business rules fail.
-5. **Repositories (`src/repositories/`)**:
-   - Interacts directly with Models/Database. 
-   - **MUST USE** the base `CrudRepository` (`src/repositories/crud-repository.js`) where possible, extending it for specific complex queries.
-6. **Models (`src/models/`) & Migrations (`src/migrations/`)**:
-   - Sequelize handles DB definitions. Always generate new entities using Sequelize CLI.
+This project adheres tightly to enterprise software practices:
+
+1. **Strict Modular Layered Architecture**: 
+   Ensures strong Separation of Concerns (SoC). Request flow follows `Router -> Middleware -> Controller -> Service -> Repository`.
+2. **Generic Base Repository Pattern (`CrudRepository`)**: 
+   A DRY approach to database queries. All specific entity repositories (like `AirplaneRepository`) inherit from `CrudRepository` to automatically leverage scalable CRUD operations.
+3. **Standardized API Responses**: 
+   Using unified templates (`SuccessResponse`, `ErrorResponse`) to ensure clients consume predictable, structured JSON structures across all endpoints.
+4. **Centralized Error Handling Architecture**: 
+   Services map DB and business logic errors directly into standard HTTP-friendly custom `AppError` payloads gracefully sent to the user instead of unparsed exceptions.
+5. **Robust Input Validation (Middlewares)**: 
+   Express middlewares securely validate schemas, parameters, and bodies prior to hitting controllers.
+6. **Relational Data Mapping with Sequelize ORM**: 
+   Full capability to manage models, associations (City-Airport `1..n`), and schema changes through automated DB Migrations and Seeders.
+7. **Config-Driven Logger**:
+   Custom integration of `Winston` logging setup configured centrally inside the config directory.
 
 ---
 
 ## 🗄️ Database Entities & Relationships
-Based on the current migrations, here is the state of the entities:
-- **Airplane**: Stores airplane details (`modelNumber`, `capacity`).
-- **City**: Stores city data (`name`).
-- **Airport**: Stores airport details (`name`, `code`, `cityId`). *Relation: A City has many Airports. An Airport belongs to a City.*
-- **Flights**: Stores complex scheduling. Links Airplane, Departure Airport, Arrival Airport, Timings, Price, Boarding Gate, etc.
+- **Airplane**: Stores airplane parameters (`modelNumber`, `capacity`).
+- **City**: Stores distinct cities (`name`). 
+- **Airport**: Stores airport details (`name`, `code`, `cityId`). 
+   *Relation Setup: A City has many Airports. An Airport belongs to a City.*
+- **Flights**: Stores complex scheduling properties. Represents a flight journey bridging Airplanes, Departure Airports, Arrival Airports, timings, price, gate info, etc.
+
+---
+
+## 💻 Progress & Established API Endpoints 
+
+Complete and ready to consume from the API:
+
+### 🌟 Info / Health
+- `GET /api/v1/info` - API Health check.
+
+### ✈️ Airplanes (Full CRUD)
+- `POST /api/v1/airplanes` - Create new Airplane
+- `GET /api/v1/airplanes` - List all Airplanes
+- `GET /api/v1/airplanes/:id` - Get Airplane details
+- `PATCH /api/v1/airplanes/:id` - Update Airplane details
+- `DELETE /api/v1/airplanes/:id` - Delete Airplane
+
+### 🏙️ Cities
+- `POST /api/v1/cities` - Create new City
+- `PATCH /api/v1/cities/:id` - Update City details
+- `DELETE /api/v1/cities/:id` - Delete City
+
+### 🛫 Airports (Full CRUD)
+- `POST /api/v1/airports` - Create new Airport
+- `GET /api/v1/airports` - List all Airports
+- `GET /api/v1/airports/:id` - Get Airport details
+- `PATCH /api/v1/airports/:id` - Update Airport details
+- `DELETE /api/v1/airports/:id` - Delete Airport
+
+### 🕒 Flights
+- `POST /api/v1/flights` - Create newly sequenced Flight journey
 
 ---
 
 ## 📂 Project Structure Context
 ```text
 src/
- ├── config/         (Winston Logger, Database config, Server ENV)
- ├── controllers/    (AirplaneController, CityController, InfoController)
- ├── middlewares/    (Validation logic per entity)
- ├── migrations/     (DB state transitions)
- ├── models/         (Sequelize entity definitions)
- ├── repositories/   (DB queries - Airplane, City, plus Base CrudRepository)
- ├── routes/         (Express routers grouped by v1)
- ├── seeders/        (Initial DB population)
- ├── services/       (Business logic - AirplaneService, CityService)
- └── utils/          (Helpers: AppError, Standardized JSON structures for Success/Error)
+ ├── config/         (Winston Logger, Database credentials, Server ENV setup)
+ ├── controllers/    (Maps req/res payloads and utilizes services)
+ ├── middlewares/    (Validation logic rules)
+ ├── migrations/     (DB state transitions & relationship creations)
+ ├── models/         (Sequelize entity & schema definitions)
+ ├── repositories/   (DB queries - Includes Base CrudRepository implementation)
+ ├── routes/         (Express routers grouped by endpoints v1)
+ ├── seeders/        (Database populating scripts)
+ ├── services/       (Business logic implementation throwing specific AppErrors)
+ └── utils/          (Helpers: AppError, standardized Success/Error structured objects)
 ```
-
----
-
-## 🔌 Current API Endpoints
-
-### Info & Health
-- `GET /api/v1/info` - Health check
-
-### Airplanes
-- `POST /api/v1/airplanes` - Create Airplane
-- `GET /api/v1/airplanes` - List Airplanes
-- `GET /api/v1/airplanes/:id` - Get Airplane
-- `PATCH /api/v1/airplanes/:id` - Update Airplane
-- `DELETE /api/v1/airplanes/:id` - Delete Airplane
-
-### Cities
-- `POST /api/v1/cities` - Create City
-- `PATCH /api/v1/cities/:id` - Update City
-- `DELETE /api/v1/cities/:id` - Delete City
-
-*(Note: Airports and Flights endpoints might be pending or in progress depending on codebase state).*
 
 ---
 
 ## 🚀 How to Run Locally
 
-1. `npm install`
-2. Define a `.env` file (`PORT=3000`).
-3. Update `src/config/config.json` with MySQL credentials.
-4. Run standard DB init: `npx sequelize db:create`
-5. Apply migrations: `npx sequelize db:migrate`
-6. Run system: `npm run dev`
-
----
-
-## 🤖 Instructions for AI Assistant (To conclude the project)
-When I ask you to build the next feature or conclude the project, please:
-1. Identify which entity we are working on (e.g., Airports, Flights, Bookings).
-2. Write the Model/Migration setup if it doesn't exist.
-3. Write the Repository extending `CrudRepository`.
-4. Write the Service encapsulating business errors.
-5. Write the Controller and standard format responses (`SuccessResponse`/`ErrorResponse`).
-6. Write the Route and inject any `validateCreateRequest` middleware.
-7. Only output the needed code blocks for these steps, maintaining the EXACT same architectural pattern shown above.
+1. Install modules:
+   ```bash
+   npm install
+   ```
+2. Configure Environment variables in a `.env` file directly at workspace root:
+   ```env
+   PORT=3000
+   ```
+3. Update `src/config/config.json` with correct MySQL credentials.
+4. Database Initialization, Creation & Migration executions:
+   ```bash
+   npx sequelize db:create
+   npx sequelize db:migrate
+   ```
+5. Seed Data (Optional):
+   ```bash
+   npx sequelize db:seed:all
+   ```
+6. Run System (Development):
+   ```bash
+   npm run dev
+   ```

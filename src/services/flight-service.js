@@ -1,7 +1,7 @@
 // services use repositories to intract with the database
 const { StatusCodes } = require('http-status-codes');
 const {FlightRepository} = require('../repositories');
-
+const {Op} = require('sequelize');
 const AppError = require('../utils/errors/app-error');
 const flightRepository = new FlightRepository();
 const comapareTime = require('../utils/helpers/datetime-helpers');
@@ -28,7 +28,38 @@ async function createFlight(data){
     }
 }
 
+async function getAllFlights(query){
+    let customFilter = {};
+    //trips = MUM-DEL
+    if(query.trips){
+        let [departure_airport_Id, arrival_airport_Id] = query.trips.split("-");
+        customFilter.departure_airport_Id = departure_airport_Id;
+        customFilter.arrival_airport_Id = arrival_airport_Id;
+    }
+
+    if(query.price){
+        [minprice, maxprice] = query.price.split("-");
+        customFilter.price = {
+            [Op.between]: [minprice, (maxprice==undefined)?20000:maxprice]
+        } 
+    }
+
+    if(query.travellers){
+        customFilter.total_seats = {
+            [Op.gte]: query.travellers 
+        }
+    }
+    console.log(customFilter);
+    try {
+        const flights = await flightRepository.getAllFlights(customFilter);
+        return flights; 
+    } catch (error) {
+        console.log(error);
+        throw new AppError('Cannot fetch data of all the flights',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
 module.exports = {
-    createFlight
+    createFlight,
+    getAllFlights
 }
 // based on what response we got from crud repository we can configure app error directly here
